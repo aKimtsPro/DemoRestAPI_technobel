@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void update(Long id, ProductForm form) {
         Product product = productRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(); // TODO préciser
 
         product.setBrand( form.getBrand() );
         product.setModel( form.getModel() );
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
     public void patchPrice(Long id, double price) {
 
         Product product = productRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(); // TODO préciser
 
         product.setPrice( price );
 
@@ -58,5 +58,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void delete(Long id) {
         productRepository.deleteById(id);
+        // TODO préciser la situation
     }
 }

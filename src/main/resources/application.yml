@@ -12,3 +12,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  security:
+    user:
+      name: user
+      password: pass
+      roles:
+        - USER
+        - ADMIN
