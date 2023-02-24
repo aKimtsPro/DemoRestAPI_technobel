@@ -27,7 +27,7 @@ public class SecurityConfig {
 
                     .requestMatchers("/security/test/connected" ).authenticated()
                     .requestMatchers("/security/test/not-connected" ).anonymous()
-
+                    // role USER => authority ROLE_USER
                     .requestMatchers("/security/test/role_user" ).hasRole("USER")
                     .requestMatchers("/security/test/any_role" ).hasAnyRole("USER", "ADMIN")
                     .requestMatchers("/security/test/has_authority_role_user" ).hasAuthority("ROLE_USER")
@@ -44,11 +44,17 @@ public class SecurityConfig {
                     //
                     .requestMatchers(HttpMethod.POST).hasRole("ADMIN")
                     //
-                    .requestMatchers(HttpMethod.GET, "/store/**").authenticated()
+//                    .requestMatchers(HttpMethod.GET, "/store/**").authenticated()
                     //
                     .requestMatchers( request -> request.getRequestURI().length() > 50 ).denyAll()
+
+                    .requestMatchers(HttpMethod.POST, "/product/**").hasAnyRole("ADMIN", "GERANT")
+                    .requestMatchers(HttpMethod.GET, "/store/**").authenticated()
+                    .requestMatchers(HttpMethod.PUT).hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PATCH).hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE).hasAnyRole("ADMIN", "GERANT")
+
                     .anyRequest().permitAll()
-                // role USER => authority ROLE_USER
 
         );
 
