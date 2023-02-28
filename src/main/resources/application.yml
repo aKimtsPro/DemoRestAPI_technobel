@@ -13,10 +13,15 @@ spring:
       hibernate:
         format_sql: true
 
-  security:
-    user:
-      name: user
-      password: pass
-      roles:
-        - USER
-        - ADMIN
+#  security:
+#    user:
+#      name: user
+#      password: pass
+#      roles:
+#        - USER
+#        - ADMIN
+
+springdoc:
+
+  swagger-ui:
+    path: /swagger
