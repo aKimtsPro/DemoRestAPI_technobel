@@ -27,9 +27,11 @@ public class User implements UserDetails {
     private String login;
     @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    private String email;
 
     @Enumerated(EnumType.STRING)
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<UserRole> roles = new LinkedHashSet<>();
     @Column(nullable = false)
     private boolean enabled;

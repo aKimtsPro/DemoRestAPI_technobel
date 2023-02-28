@@ -3,9 +3,15 @@ package be.technobel.api.config.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Scanner;
 
@@ -14,11 +20,20 @@ import java.util.Scanner;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public PasswordEncoder encoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
 
         http.csrf().disable();
 
-        http.httpBasic();
+        http.httpBasic().disable();
+
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeHttpRequests(
             registry -> registry
@@ -42,11 +57,11 @@ public class SecurityConfig {
                     .requestMatchers("/security/test/*", "/security/t?st").denyAll()
 
                     //
-                    .requestMatchers(HttpMethod.POST).hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.POST).hasRole("ADMIN")
                     //
 //                    .requestMatchers(HttpMethod.GET, "/store/**").authenticated()
                     //
-                    .requestMatchers( request -> request.getRequestURI().length() > 50 ).denyAll()
+                    .requestMatchers( request -> request.getRequestURI().length() > 500 ).denyAll()
 
                     .requestMatchers(HttpMethod.POST, "/product/**").hasAnyRole("ADMIN", "GERANT")
                     .requestMatchers(HttpMethod.GET, "/store/**").authenticated()
@@ -54,11 +69,18 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.PATCH).hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE).hasAnyRole("ADMIN", "GERANT")
 
+//                    .requestMatchers("/auth/**").permitAll()
+
                     .anyRequest().permitAll()
 
         );
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
 }
