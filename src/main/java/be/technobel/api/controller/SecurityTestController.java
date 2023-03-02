@@ -1,5 +1,6 @@
 package be.technobel.api.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +17,8 @@ public class SecurityTestController {
 
     // Tout le monde peut acceder
     @GetMapping("/connected")
-    public String connected(){
-        return "ok";
+    public String connected(Authentication auth){
+        return auth.getPrincipal().toString();
     }
     // Tout le monde peut acceder
     @GetMapping("/not-connected")
